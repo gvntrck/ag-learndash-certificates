@@ -1,0 +1,69 @@
+.agldc-admin-page {
+	max-width: 1120px;
+}
+
+.agldc-admin-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+	gap: 20px;
+	margin: 24px 0;
+}
+
+.agldc-admin-card {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+}
+
+.agldc-admin-card h2 {
+	margin-top: 0;
+}
+
+.agldc-image-preview-wrapper {
+	align-items: center;
+	background: #f6f7f7;
+	border: 1px dashed #c3c4c7;
+	border-radius: 8px;
+	display: flex;
+	justify-content: center;
+	min-height: 220px;
+	overflow: hidden;
+	padding: 16px;
+}
+
+.agldc-image-preview-wrapper img {
+	display: block;
+	height: auto;
+	max-height: 260px;
+	max-width: 100%;
+}
+
+.agldc-image-placeholder {
+	color: #646970;
+	font-size: 14px;
+	text-align: center;
+}
+
+.agldc-image-actions {
+	align-items: center;
+	display: flex;
+	gap: 16px;
+}
+
+.agldc-certificate-list {
+	display: grid;
+	gap: 16px;
+}
+
+.agldc-certificate-item {
+	background: #fff;
+	border: 1px solid #dcdcde;
+	border-radius: 8px;
+	padding: 20px;
+}
+
+.agldc-certificate-item h3 {
+	margin: 0 0 8px;
+}

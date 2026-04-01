@@ -1,0 +1,20 @@
+.agldc-certificate-list {
+	display: grid;
+	gap: 16px;
+}
+
+.agldc-certificate-item {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 10px;
+	box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+	padding: 20px;
+}
+
+.agldc-certificate-item h3 {
+	margin: 0 0 8px;
+}
+
+.agldc-certificate-item p {
+	margin: 0 0 12px;
+}
