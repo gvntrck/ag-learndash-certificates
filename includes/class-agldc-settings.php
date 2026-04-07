@@ -16,13 +16,23 @@ class AGLDC_Settings {
 	public static function defaults() {
 		return array(
 			'completion_percentage' => 70,
-			'certificate_image_id'  => 0,
-			'font_family'           => 'helvetica',
-			'font_size'             => 32,
-			'font_color'            => '#1f2937',
-			'name_position_x'       => 50,
-			'name_position_y'       => 56,
-			'name_alignment'        => 'center',
+		);
+	}
+
+	/**
+	 * Returns the default certificate settings for courses and groups.
+	 *
+	 * @return array<string, mixed>
+	 */
+	public static function certificate_defaults() {
+		return array(
+			'certificate_image_id' => 0,
+			'font_family'          => 'helvetica',
+			'font_size'            => 32,
+			'font_color'           => '#1f2937',
+			'name_position_x'      => 50,
+			'name_position_y'      => 56,
+			'name_alignment'       => 'center',
 		);
 	}
 
@@ -46,7 +56,7 @@ class AGLDC_Settings {
 		$course_id = absint( $course_id );
 
 		if ( ! $course_id ) {
-			return self::get();
+			return self::certificate_defaults();
 		}
 
 		$stored = get_option( self::course_option_key( $course_id ), array() );
@@ -55,7 +65,7 @@ class AGLDC_Settings {
 			$stored = array();
 		}
 
-		$defaults = self::get();
+		$defaults = self::certificate_defaults();
 
 		return wp_parse_args( $stored, $defaults );
 	}
@@ -74,7 +84,7 @@ class AGLDC_Settings {
 			return false;
 		}
 
-		$defaults   = self::get();
+		$defaults   = self::certificate_defaults();
 		$sanitized  = self::sanitize_course_settings( $settings, $defaults );
 
 		return update_option( self::course_option_key( $course_id ), $sanitized );
@@ -145,7 +155,7 @@ class AGLDC_Settings {
 
 	/**
 	 * Gets certificate settings for a specific group.
-	 * Falls back to course settings, then global settings if none exist.
+	 * Falls back to course settings if none exist.
 	 *
 	 * @param int $group_id  Group ID.
 	 * @param int $course_id Course ID for fallback.
@@ -156,7 +166,7 @@ class AGLDC_Settings {
 		$course_id = absint( $course_id );
 
 		if ( ! $group_id ) {
-			return $course_id ? self::get_course_certificate( $course_id ) : self::get();
+			return $course_id ? self::get_course_certificate( $course_id ) : self::certificate_defaults();
 		}
 
 		$stored = get_option( self::group_option_key( $group_id, $course_id ), null );
@@ -169,8 +179,7 @@ class AGLDC_Settings {
 			$stored = array();
 		}
 
-		// Fall back to course settings, then global
-		$fallback = $course_id ? self::get_course_certificate( $course_id ) : self::get();
+		$fallback = $course_id ? self::get_course_certificate( $course_id ) : self::certificate_defaults();
 
 		return wp_parse_args( $stored, $fallback );
 	}
@@ -191,7 +200,7 @@ class AGLDC_Settings {
 			return false;
 		}
 
-		$defaults  = $course_id ? self::get_course_certificate( $course_id ) : self::get();
+		$defaults  = $course_id ? self::get_course_certificate( $course_id ) : self::certificate_defaults();
 		$sanitized = self::sanitize_course_settings( $settings, $defaults );
 
 		return update_option( self::group_option_key( $group_id, $course_id ), $sanitized );
@@ -233,17 +242,9 @@ class AGLDC_Settings {
 		$defaults = self::defaults();
 		$raw      = is_array( $raw ) ? $raw : array();
 
-		$settings                           = array();
-		$settings['completion_percentage']  = max( 1, min( 100, absint( $raw['completion_percentage'] ?? $defaults['completion_percentage'] ) ) );
-		$settings['certificate_image_id']   = self::sanitize_image_id( $raw['certificate_image_id'] ?? 0 );
-		$settings['font_family']            = self::sanitize_font_family( $raw['font_family'] ?? $defaults['font_family'] );
-		$settings['font_size']              = max( 10, min( 120, intval( $raw['font_size'] ?? $defaults['font_size'] ) ) );
-		$settings['font_color']             = self::sanitize_font_color( $raw['font_color'] ?? $defaults['font_color'] );
-		$settings['name_position_x']        = self::sanitize_percentage_float( $raw['name_position_x'] ?? $defaults['name_position_x'] );
-		$settings['name_position_y']        = self::sanitize_percentage_float( $raw['name_position_y'] ?? $defaults['name_position_y'] );
-		$settings['name_alignment']         = self::sanitize_alignment( $raw['name_alignment'] ?? $defaults['name_alignment'] );
-
-		return $settings;
+		return array(
+			'completion_percentage' => max( 1, min( 100, absint( $raw['completion_percentage'] ?? $defaults['completion_percentage'] ) ) ),
+		);
 	}
 
 	/**
@@ -258,7 +259,7 @@ class AGLDC_Settings {
 			array(
 				'type'              => 'array',
 				'sanitize_callback' => array( __CLASS__, 'sanitize' ),
-				'default'           => self::defaults(),
+			'default'           => self::defaults(),
 			)
 		);
 	}
@@ -312,7 +313,7 @@ class AGLDC_Settings {
 		$font_color = sanitize_hex_color( $font_color );
 
 		if ( ! $font_color ) {
-			return self::defaults()['font_color'];
+			return self::certificate_defaults()['font_color'];
 		}
 
 		return $font_color;

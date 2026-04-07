@@ -1,23 +1,6 @@
 (function ($) {
 	'use strict';
 
-	function setImageState(url, id) {
-		var $preview = $('#agldc-image-preview');
-		var $placeholder = $('#agldc-image-placeholder');
-		var $field = $('#agldc-certificate-image-id');
-
-		$field.val(id || '');
-
-		if (url) {
-			$preview.attr('src', url).show();
-			$placeholder.hide();
-			return;
-		}
-
-		$preview.attr('src', '').hide();
-		$placeholder.show();
-	}
-
 	function setCourseImageState(courseId, url, id) {
 		var $card = $('[data-course-id="' + courseId + '"]').closest('.agldc-course-card');
 		var $preview = $card.find('.agldc-course-preview img');
@@ -38,49 +21,14 @@
 			$badge.removeClass('agldc-badge-global').addClass('agldc-badge-custom').text('Personalizado');
 		} else {
 			$preview.remove();
-			$placeholder = $('<div class="agldc-image-placeholder">Usando imagem global</div>');
+			$placeholder = $('<div class="agldc-image-placeholder">Nenhuma imagem configurada para este curso.</div>');
 			$card.find('.agldc-course-preview').append($placeholder);
-			$badge.removeClass('agldc-badge-custom').addClass('agldc-badge-global').text('Usando global');
+			$badge.removeClass('agldc-badge-custom').addClass('agldc-badge-global').text('Não configurado');
 		}
 	}
 
 	$(function () {
-		var frame;
-
 		$('.agldc-color-field').wpColorPicker();
-
-		// Global certificate image upload
-		$('#agldc-upload-image').on('click', function (event) {
-			event.preventDefault();
-
-			if (frame) {
-				frame.open();
-				return;
-			}
-
-			frame = wp.media({
-				title: 'Selecionar imagem do certificado',
-				button: {
-					text: 'Usar imagem'
-				},
-				library: {
-					type: ['image/jpeg', 'image/png']
-				},
-				multiple: false
-			});
-
-			frame.on('select', function () {
-				var attachment = frame.state().get('selection').first().toJSON();
-				setImageState(attachment.url, attachment.id);
-			});
-
-			frame.open();
-		});
-
-		$('#agldc-remove-image').on('click', function (event) {
-			event.preventDefault();
-			setImageState('', '');
-		});
 
 		// Course-specific certificate image upload
 		$(document).on('click', '.agldc-upload-course-image', function (event) {
@@ -121,6 +69,7 @@
 			var $preview = $card.find('.agldc-group-preview img');
 			var $placeholder = $card.find('.agldc-group-preview .agldc-image-placeholder');
 			var $badge = $card.find('.agldc-badge-global, .agldc-badge-custom');
+			var fallbackLabel = $field.data('fallback-label') || 'Usando curso';
 
 			$field.val(id || '');
 
@@ -135,9 +84,9 @@
 				$badge.removeClass('agldc-badge-global').addClass('agldc-badge-custom').text('Personalizado');
 			} else {
 				$preview.remove();
-				$placeholder = $('<div class="agldc-image-placeholder">Usando curso</div>');
+				$placeholder = $('<div class="agldc-image-placeholder"></div>').text(fallbackLabel);
 				$card.find('.agldc-group-preview').append($placeholder);
-				$badge.removeClass('agldc-badge-custom').addClass('agldc-badge-global').text('Usando curso');
+				$badge.removeClass('agldc-badge-custom').addClass('agldc-badge-global').text(fallbackLabel);
 			}
 		}
 

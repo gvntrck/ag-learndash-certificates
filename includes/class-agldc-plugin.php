@@ -180,7 +180,7 @@ class AGLDC_Plugin {
 			<h2 class="nav-tab-wrapper">
 				<a href="<?php echo esc_url( add_query_arg( 'tab', 'general', remove_query_arg( 'tab' ) ) ); ?>" 
 				   class="nav-tab <?php echo 'general' === $active_tab ? 'nav-tab-active' : ''; ?>">
-					<?php esc_html_e( 'Configurações Globais', 'ag-learndash-certificates' ); ?>
+					<?php esc_html_e( 'Configurações Gerais', 'ag-learndash-certificates' ); ?>
 				</a>
 				<a href="<?php echo esc_url( add_query_arg( 'tab', 'courses', remove_query_arg( 'tab' ) ) ); ?>" 
 				   class="nav-tab <?php echo 'courses' === $active_tab ? 'nav-tab-active' : ''; ?>">
@@ -203,15 +203,10 @@ class AGLDC_Plugin {
 	 * @return void
 	 */
 	private function render_general_tab() {
-		$settings       = AGLDC_Settings::get();
-		$image_id       = absint( $settings['certificate_image_id'] );
-		$image_url      = $image_id ? wp_get_attachment_image_url( $image_id, 'large' ) : '';
-		$font_options   = AGLDC_Settings::font_family_options();
-		$align_options  = AGLDC_Settings::alignment_options();
-		$shortcode      = '[agld_certificados]';
-		$image_mime_tip = __( 'Formatos aceitos: JPG ou PNG.', 'ag-learndash-certificates' );
+		$settings  = AGLDC_Settings::get();
+		$shortcode = '[agld_certificados]';
 		?>
-		<p><?php esc_html_e( 'Defina o percentual mínimo, envie a arte do certificado e ajuste como o nome do aluno será desenhado no PDF.', 'ag-learndash-certificates' ); ?></p>
+		<p><?php esc_html_e( 'Defina o percentual mínimo para liberação dos certificados. A arte e o posicionamento do nome agora são configurados por curso ou grupo.', 'ag-learndash-certificates' ); ?></p>
 
 		<div class="agldc-admin-card">
 			<p>
@@ -247,125 +242,6 @@ class AGLDC_Plugin {
 					</table>
 				</div>
 
-				<div class="agldc-admin-card">
-					<h2><?php esc_html_e( 'Arte do certificado', 'ag-learndash-certificates' ); ?></h2>
-					<input
-						type="hidden"
-						id="agldc-certificate-image-id"
-						name="<?php echo esc_attr( AGLDC_Settings::OPTION_KEY ); ?>[certificate_image_id]"
-						value="<?php echo esc_attr( $image_id ); ?>"
-					/>
-					<div class="agldc-image-preview-wrapper">
-						<?php if ( $image_url ) : ?>
-							<img id="agldc-image-preview" src="<?php echo esc_url( $image_url ); ?>" alt="" />
-						<?php else : ?>
-							<img id="agldc-image-preview" src="" alt="" style="display:none;" />
-						<?php endif; ?>
-						<div id="agldc-image-placeholder" class="agldc-image-placeholder" <?php echo $image_url ? 'style="display:none;"' : ''; ?>>
-							<?php esc_html_e( 'Nenhuma imagem selecionada.', 'ag-learndash-certificates' ); ?>
-						</div>
-					</div>
-					<p class="description"><?php echo esc_html( $image_mime_tip ); ?></p>
-					<p class="agldc-image-actions">
-						<button type="button" class="button button-secondary" id="agldc-upload-image">
-							<?php esc_html_e( 'Selecionar imagem', 'ag-learndash-certificates' ); ?>
-						</button>
-						<button type="button" class="button-link-delete" id="agldc-remove-image">
-							<?php esc_html_e( 'Remover imagem', 'ag-learndash-certificates' ); ?>
-						</button>
-					</p>
-				</div>
-
-				<div class="agldc-admin-card agldc-admin-card-full">
-					<h2><?php esc_html_e( 'Nome do aluno', 'ag-learndash-certificates' ); ?></h2>
-					<table class="form-table" role="presentation">
-						<tr>
-							<th scope="row">
-								<label for="agldc-font-family"><?php esc_html_e( 'Fonte', 'ag-learndash-certificates' ); ?></label>
-							</th>
-							<td>
-								<select id="agldc-font-family" name="<?php echo esc_attr( AGLDC_Settings::OPTION_KEY ); ?>[font_family]">
-									<?php foreach ( $font_options as $key => $label ) : ?>
-										<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $settings['font_family'], $key ); ?>><?php echo esc_html( $label ); ?></option>
-									<?php endforeach; ?>
-								</select>
-								<p class="description"><?php esc_html_e( 'Fontes nativas de PDF - sem dependências externas.', 'ag-learndash-certificates' ); ?></p>
-							</td>
-							<th scope="row">
-								<label for="agldc-font-size"><?php esc_html_e( 'Tamanho', 'ag-learndash-certificates' ); ?></label>
-							</th>
-							<td>
-								<input
-									id="agldc-font-size"
-									name="<?php echo esc_attr( AGLDC_Settings::OPTION_KEY ); ?>[font_size]"
-									type="number"
-									min="10"
-									max="120"
-									class="small-text"
-									value="<?php echo esc_attr( $settings['font_size'] ); ?>"
-								/>
-							</td>
-						</tr>
-						<tr>
-							<th scope="row">
-								<label for="agldc-font-color"><?php esc_html_e( 'Cor', 'ag-learndash-certificates' ); ?></label>
-							</th>
-							<td>
-								<input
-									id="agldc-font-color"
-									class="agldc-color-field"
-									name="<?php echo esc_attr( AGLDC_Settings::OPTION_KEY ); ?>[font_color]"
-									type="text"
-									value="<?php echo esc_attr( $settings['font_color'] ); ?>"
-								/>
-							</td>
-							<th scope="row">
-								<label for="agldc-name-alignment"><?php esc_html_e( 'Alinhamento', 'ag-learndash-certificates' ); ?></label>
-							</th>
-							<td>
-								<select id="agldc-name-alignment" name="<?php echo esc_attr( AGLDC_Settings::OPTION_KEY ); ?>[name_alignment]">
-									<?php foreach ( $align_options as $key => $label ) : ?>
-										<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $settings['name_alignment'], $key ); ?>><?php echo esc_html( $label ); ?></option>
-									<?php endforeach; ?>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<th scope="row">
-								<label for="agldc-name-position-x"><?php esc_html_e( 'Posição X (%)', 'ag-learndash-certificates' ); ?></label>
-							</th>
-							<td>
-								<input
-									id="agldc-name-position-x"
-									name="<?php echo esc_attr( AGLDC_Settings::OPTION_KEY ); ?>[name_position_x]"
-									type="number"
-									step="0.1"
-									min="0"
-									max="100"
-									class="small-text"
-									value="<?php echo esc_attr( $settings['name_position_x'] ); ?>"
-								/>
-								<p class="description"><?php esc_html_e( 'Percentual horizontal da largura.', 'ag-learndash-certificates' ); ?></p>
-							</td>
-							<th scope="row">
-								<label for="agldc-name-position-y"><?php esc_html_e( 'Posição Y (%)', 'ag-learndash-certificates' ); ?></label>
-							</th>
-							<td>
-								<input
-									id="agldc-name-position-y"
-									name="<?php echo esc_attr( AGLDC_Settings::OPTION_KEY ); ?>[name_position_y]"
-									type="number"
-									step="0.1"
-									min="0"
-									max="100"
-									class="small-text"
-									value="<?php echo esc_attr( $settings['name_position_y'] ); ?>"
-								/>
-								<p class="description"><?php esc_html_e( 'Percentual vertical da altura.', 'ag-learndash-certificates' ); ?></p>
-							</td>
-						</tr>
-					</table>
-				</div>
 			</div>
 
 			<?php submit_button( __( 'Salvar configurações', 'ag-learndash-certificates' ) ); ?>
@@ -380,7 +256,6 @@ class AGLDC_Plugin {
 	 */
 	private function render_courses_tab() {
 		$courses = $this->learndash->get_all_courses();
-		$global_settings = AGLDC_Settings::get();
 		$groups_available = $this->learndash->groups_available();
 
 		if ( empty( $courses ) ) :
@@ -402,15 +277,13 @@ class AGLDC_Plugin {
 			<?php
 		}
 
-		$font_options  = AGLDC_Settings::font_family_options();
-		$align_options = AGLDC_Settings::alignment_options();
 		?>
-		<p><?php esc_html_e( 'Configure certificados específicos para cada curso e grupo. Deixe em branco para usar as configurações globais.', 'ag-learndash-certificates' ); ?></p>
+		<p><?php esc_html_e( 'Configure certificados por curso e, se necessário, sobrescreva por grupo. Cada curso precisa ter sua própria arte de certificado.', 'ag-learndash-certificates' ); ?></p>
 
 		<?php if ( $groups_available ) : ?>
 		<p class="description">
 			<strong><?php esc_html_e( 'Hierarquia:', 'ag-learndash-certificates' ); ?></strong> 
-			<?php esc_html_e( 'Grupo > Curso > Global. Se um grupo tiver configurações personalizadas, elas serão usadas. Senão, usa o curso. Senão, usa global.', 'ag-learndash-certificates' ); ?>
+			<?php esc_html_e( 'Grupo > Curso. Se um grupo tiver configurações personalizadas, elas serão usadas. Senão, usa o curso.', 'ag-learndash-certificates' ); ?>
 		</p>
 		<?php endif; ?>
 
@@ -423,7 +296,6 @@ class AGLDC_Plugin {
 					$course_settings = AGLDC_Settings::get_course_certificate( $course['course_id'] );
 					$course_image_id   = absint( $course_settings['certificate_image_id'] );
 					$course_image_url  = $course_image_id ? wp_get_attachment_image_url( $course_image_id, 'thumbnail' ) : '';
-					$has_course_custom = $course_image_id > 0 && $course_image_id !== absint( $global_settings['certificate_image_id'] );
 					$course_field_prefix = 'agldc_course_' . $course['course_id'];
 
 					$course_groups = $groups_available ? $this->learndash->get_course_groups( $course['course_id'] ) : array();
@@ -431,10 +303,10 @@ class AGLDC_Plugin {
 					<div class="agldc-admin-card agldc-course-card">
 						<div class="agldc-course-header">
 							<h3><?php echo esc_html( $course['course_title'] ); ?></h3>
-							<?php if ( $has_course_custom ) : ?>
+							<?php if ( $course_image_id > 0 ) : ?>
 								<span class="agldc-badge-custom"><?php esc_html_e( 'Personalizado', 'ag-learndash-certificates' ); ?></span>
 							<?php else : ?>
-								<span class="agldc-badge-global"><?php esc_html_e( 'Usando global', 'ag-learndash-certificates' ); ?></span>
+								<span class="agldc-badge-global"><?php esc_html_e( 'Não configurado', 'ag-learndash-certificates' ); ?></span>
 							<?php endif; ?>
 						</div>
 
@@ -453,7 +325,7 @@ class AGLDC_Plugin {
 										<img src="<?php echo esc_url( $course_image_url ); ?>" alt="" />
 									<?php else : ?>
 										<div class="agldc-image-placeholder">
-											<?php esc_html_e( 'Usando imagem global', 'ag-learndash-certificates' ); ?>
+											<?php esc_html_e( 'Nenhuma imagem configurada para este curso.', 'ag-learndash-certificates' ); ?>
 										</div>
 									<?php endif; ?>
 								</div>
@@ -522,7 +394,8 @@ class AGLDC_Plugin {
 									$group_settings = AGLDC_Settings::get_group_certificate( $group['group_id'], $course['course_id'] );
 									$group_image_id   = absint( $group_settings['certificate_image_id'] );
 									$group_image_url  = $group_image_id ? wp_get_attachment_image_url( $group_image_id, 'thumbnail' ) : '';
-									$has_group_custom = $group_image_id > 0 && $group_image_id !== $course_image_id;
+									$has_group_custom = $group_image_id > 0;
+									$group_fallback_label = $course_image_id > 0 ? __( 'Usando curso', 'ag-learndash-certificates' ) : __( 'Não configurado', 'ag-learndash-certificates' );
 									$group_field_prefix = 'agldc_group_' . $group['group_id'] . '_course_' . $course['course_id'];
 									?>
 									<div class="agldc-group-card">
@@ -531,7 +404,7 @@ class AGLDC_Plugin {
 											<?php if ( $has_group_custom ) : ?>
 												<span class="agldc-badge-custom"><?php esc_html_e( 'Personalizado', 'ag-learndash-certificates' ); ?></span>
 											<?php else : ?>
-												<span class="agldc-badge-global"><?php esc_html_e( 'Usando curso', 'ag-learndash-certificates' ); ?></span>
+												<span class="agldc-badge-global"><?php echo esc_html( $group_fallback_label ); ?></span>
 											<?php endif; ?>
 										</div>
 										<div class="agldc-group-fields">
@@ -544,13 +417,14 @@ class AGLDC_Plugin {
 													class="agldc-group-image-id"
 													data-group-id="<?php echo esc_attr( $group['group_id'] ); ?>"
 													data-course-id="<?php echo esc_attr( $course['course_id'] ); ?>"
+													data-fallback-label="<?php echo esc_attr( $group_fallback_label ); ?>"
 												/>
 												<div class="agldc-image-preview-wrapper agldc-group-preview">
 													<?php if ( $group_image_url ) : ?>
 														<img src="<?php echo esc_url( $group_image_url ); ?>" alt="" />
 													<?php else : ?>
 														<div class="agldc-image-placeholder">
-															<?php esc_html_e( 'Usando curso', 'ag-learndash-certificates' ); ?>
+															<?php echo esc_html( $group_fallback_label ); ?>
 														</div>
 													<?php endif; ?>
 												</div>
@@ -709,7 +583,7 @@ class AGLDC_Plugin {
 			return '<p>' . esc_html__( 'O LearnDash precisa estar ativo para listar os certificados.', 'ag-learndash-certificates' ) . '</p>';
 		}
 
-		$global_settings = AGLDC_Settings::get();
+		$general_settings = AGLDC_Settings::get();
 		$user_id         = get_current_user_id();
 		$courses         = $this->learndash->get_user_course_progress( $user_id );
 		$eligible        = array();
@@ -718,7 +592,7 @@ class AGLDC_Plugin {
 			$course_id   = $course['course_id'];
 			$group_id    = $this->learndash->get_user_course_group( $user_id, $course_id );
 
-			// Get settings with hierarchy: Group > Course > Global
+			// Get settings with hierarchy: Group > Course
 			if ( $group_id ) {
 				$settings = AGLDC_Settings::get_group_certificate( $group_id, $course_id );
 			} else {
@@ -727,12 +601,11 @@ class AGLDC_Plugin {
 
 			$image_id = absint( $settings['certificate_image_id'] );
 
-			// Skip if no certificate image configured at any level
-			if ( empty( $image_id ) && empty( $global_settings['certificate_image_id'] ) ) {
+			if ( empty( $image_id ) ) {
 				continue;
 			}
 
-			if ( $this->learndash->user_is_eligible_for_certificate( $user_id, $course_id, $global_settings['completion_percentage'] ) ) {
+			if ( $this->learndash->user_is_eligible_for_certificate( $user_id, $course_id, $general_settings['completion_percentage'] ) ) {
 				$course['certificate_url'] = $this->build_certificate_url( (int) $course_id, $group_id );
 				$course['group_id']          = $group_id;
 				$eligible[]                  = $course;
@@ -748,25 +621,25 @@ class AGLDC_Plugin {
 		<div class="agldc-certificate-list">
 			<?php foreach ( $eligible as $course ) : ?>
 				<div class="agldc-certificate-item">
-					<h3><?php echo esc_html( $course['course_title'] ); ?></h3>
-					<p>
-						<?php
-						echo esc_html(
-							sprintf(
-								/* translators: 1: completed lessons, 2: total lessons, 3: percentage. */
-								__( '%1$d de %2$d aulas concluídas (%3$s%%).', 'ag-learndash-certificates' ),
-								(int) $course['completed'],
-								(int) $course['total'],
-								number_format_i18n( (float) $course['percentage'], 2 )
-							)
-						);
-						?>
-					</p>
-					<p>
-						<a class="button" href="<?php echo esc_url( $course['certificate_url'] ); ?>" target="_blank" rel="noopener noreferrer">
-							<?php esc_html_e( 'Abrir certificado em PDF', 'ag-learndash-certificates' ); ?>
-						</a>
-					</p>
+					<div class="agldc-certificate-content">
+						<h3><?php echo esc_html( $course['course_title'] ); ?></h3>
+						<p class="agldc-certificate-meta">
+							<?php
+							echo esc_html(
+								sprintf(
+									/* translators: 1: completed lessons, 2: total lessons, 3: percentage. */
+									__( '%1$d/%2$d aulas (%3$s%%).', 'ag-learndash-certificates' ),
+									(int) $course['completed'],
+									(int) $course['total'],
+									number_format_i18n( (float) $course['percentage'], 2 )
+								)
+							);
+							?>
+						</p>
+					</div>
+					<a class="button agldc-certificate-button" href="<?php echo esc_url( $course['certificate_url'] ); ?>" target="_blank" rel="noopener noreferrer">
+						<?php esc_html_e( 'Baixar certificado', 'ag-learndash-certificates' ); ?>
+					</a>
 				</div>
 			<?php endforeach; ?>
 		</div>
@@ -794,7 +667,7 @@ class AGLDC_Plugin {
 
 		check_admin_referer( 'agldc_generate_certificate_' . $course_id );
 
-		$global_settings = AGLDC_Settings::get();
+		$general_settings = AGLDC_Settings::get();
 		$user_id         = get_current_user_id();
 
 		// Verify user belongs to the provided group (if any) for this course
@@ -811,7 +684,7 @@ class AGLDC_Plugin {
 			}
 
 			if ( ! $valid_group ) {
-				$group_id = 0; // Reset to use course/global settings
+				$group_id = 0; // Reset to use course settings
 			}
 		}
 
@@ -820,22 +693,18 @@ class AGLDC_Plugin {
 			$group_id = $this->learndash->get_user_course_group( $user_id, $course_id );
 		}
 
-		if ( ! $this->learndash->user_is_eligible_for_certificate( $user_id, $course_id, $global_settings['completion_percentage'] ) ) {
+		if ( ! $this->learndash->user_is_eligible_for_certificate( $user_id, $course_id, $general_settings['completion_percentage'] ) ) {
 			wp_die( esc_html__( 'Você ainda não atingiu o percentual mínimo para emitir este certificado.', 'ag-learndash-certificates' ), 403 );
 		}
 
-		// Get settings with hierarchy: Group > Course > Global
+		// Get settings with hierarchy: Group > Course
 		if ( $group_id ) {
 			$settings = AGLDC_Settings::get_group_certificate( $group_id, $course_id );
 		} else {
 			$settings = AGLDC_Settings::get_course_certificate( $course_id );
 		}
 
-		// Use settings-specific image if set, otherwise fall back
 		$image_id = absint( $settings['certificate_image_id'] );
-		if ( empty( $image_id ) ) {
-			$image_id = absint( $global_settings['certificate_image_id'] );
-		}
 
 		$path = $image_id ? get_attached_file( $image_id ) : '';
 
