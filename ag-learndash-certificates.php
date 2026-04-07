@@ -3,7 +3,7 @@
  * Plugin Name: LearnDash Certificates Gvntrck
  * Plugin URI: https://projetoalfa.org
  * Description: Gera certificados em PDF para cursos do LearnDash com base em percentual configurável de aulas concluídas.
- * Version: 1.1.4
+ * Version: 1.1.5
  * Author: Giovani Tureck
  * Author URI: https://projetoalfa.org
  * Text Domain: learndash-certificates-gvntrck
@@ -29,7 +29,7 @@ $myUpdateChecker->setAuthentication('your-token-here');
 
 
 
-define('AGLDC_VERSION', '1.1.4');
+define('AGLDC_VERSION', '1.1.5');
 define('AGLDC_FILE', __FILE__);
 define('AGLDC_DIR', plugin_dir_path(__FILE__));
 define('AGLDC_URL', plugin_dir_url(__FILE__));
