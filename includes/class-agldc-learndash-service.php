@@ -18,6 +18,37 @@ class AGLDC_LearnDash_Service {
 	}
 
 	/**
+	 * Returns all published courses.
+	 *
+	 * @return array<int, array<string, mixed>>
+	 */
+	public function get_all_courses() {
+		if ( ! $this->is_available() ) {
+			return array();
+		}
+
+		$args = array(
+			'post_type'      => 'sfwd-courses',
+			'post_status'    => 'publish',
+			'posts_per_page' => -1,
+			'orderby'        => 'title',
+			'order'          => 'ASC',
+		);
+
+		$courses = get_posts( $args );
+		$result  = array();
+
+		foreach ( $courses as $course ) {
+			$result[] = array(
+				'course_id'    => $course->ID,
+				'course_title' => $course->post_title,
+			);
+		}
+
+		return $result;
+	}
+
+	/**
 	 * Returns all enrolled courses with progress and eligibility information.
 	 *
 	 * @param int $user_id User ID.

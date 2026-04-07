@@ -95,3 +95,101 @@
 .agldc-certificate-item h3 {
 	margin: 0 0 8px;
 }
+
+/* Course certificates tab */
+.agldc-courses-list {
+	display: grid;
+	gap: 20px;
+	margin: 24px 0;
+}
+
+.agldc-course-card {
+	padding: 20px;
+}
+
+.agldc-course-header {
+	align-items: center;
+	display: flex;
+	gap: 12px;
+	margin-bottom: 16px;
+}
+
+.agldc-course-header h3 {
+	margin: 0;
+	flex: 1;
+}
+
+.agldc-badge-custom,
+.agldc-badge-global {
+	border-radius: 12px;
+	font-size: 11px;
+	font-weight: 600;
+	padding: 4px 10px;
+	text-transform: uppercase;
+}
+
+.agldc-badge-custom {
+	background: #c6e1c6;
+	color: #5b841b;
+}
+
+.agldc-badge-global {
+	background: #f0f0f1;
+	color: #646970;
+}
+
+.agldc-course-fields {
+	display: grid;
+	grid-template-columns: 240px 1fr;
+	gap: 24px;
+}
+
+@media (max-width: 782px) {
+	.agldc-course-fields {
+		grid-template-columns: 1fr;
+	}
+}
+
+.agldc-course-image-section h4,
+.agldc-course-text-section h4 {
+	font-size: 13px;
+	font-weight: 600;
+	margin: 0 0 12px;
+	text-transform: uppercase;
+	color: #646970;
+}
+
+.agldc-course-preview {
+	min-height: 140px;
+	padding: 12px;
+}
+
+.agldc-course-preview img {
+	max-height: 120px;
+}
+
+.agldc-course-text-fields {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+}
+
+.agldc-field-group {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.agldc-field-group label {
+	color: #646970;
+	font-size: 12px;
+}
+
+.agldc-field-group input {
+	width: 70px;
+}
+
+/* Nav tabs styling */
+.nav-tab-wrapper {
+	margin-bottom: 20px;
+}

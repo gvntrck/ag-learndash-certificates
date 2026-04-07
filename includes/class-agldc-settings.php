@@ -27,6 +27,91 @@ class AGLDC_Settings {
 	}
 
 	/**
+	 * Returns the option key for course-specific certificate settings.
+	 *
+	 * @param int $course_id Course ID.
+	 * @return string
+	 */
+	private static function course_option_key( $course_id ) {
+		return 'agldc_course_' . absint( $course_id ) . '_certificate';
+	}
+
+	/**
+	 * Gets the certificate settings for a specific course.
+	 *
+	 * @param int $course_id Course ID.
+	 * @return array<string, mixed>
+	 */
+	public static function get_course_certificate( $course_id ) {
+		$course_id = absint( $course_id );
+
+		if ( ! $course_id ) {
+			return self::get();
+		}
+
+		$stored = get_option( self::course_option_key( $course_id ), array() );
+
+		if ( ! is_array( $stored ) ) {
+			$stored = array();
+		}
+
+		$defaults = self::get();
+
+		return wp_parse_args( $stored, $defaults );
+	}
+
+	/**
+	 * Saves the certificate settings for a specific course.
+	 *
+	 * @param int   $course_id Course ID.
+	 * @param array $settings  Settings array.
+	 * @return bool
+	 */
+	public static function save_course_certificate( $course_id, $settings ) {
+		$course_id = absint( $course_id );
+
+		if ( ! $course_id || ! is_array( $settings ) ) {
+			return false;
+		}
+
+		$defaults   = self::get();
+		$sanitized  = self::sanitize_course_settings( $settings, $defaults );
+
+		return update_option( self::course_option_key( $course_id ), $sanitized );
+	}
+
+	/**
+	 * Sanitizes course-specific settings.
+	 *
+	 * @param array $raw      Raw settings.
+	 * @param array $defaults Default settings.
+	 * @return array<string, mixed>
+	 */
+	private static function sanitize_course_settings( $raw, $defaults ) {
+		$settings = array();
+
+		$settings['certificate_image_id'] = self::sanitize_image_id( $raw['certificate_image_id'] ?? $defaults['certificate_image_id'] );
+		$settings['font_family']          = self::sanitize_font_family( $raw['font_family'] ?? $defaults['font_family'] );
+		$settings['font_size']            = max( 10, min( 120, intval( $raw['font_size'] ?? $defaults['font_size'] ) ) );
+		$settings['font_color']           = self::sanitize_font_color( $raw['font_color'] ?? $defaults['font_color'] );
+		$settings['name_position_x']      = self::sanitize_percentage_float( $raw['name_position_x'] ?? $defaults['name_position_x'] );
+		$settings['name_position_y']      = self::sanitize_percentage_float( $raw['name_position_y'] ?? $defaults['name_position_y'] );
+		$settings['name_alignment']       = self::sanitize_alignment( $raw['name_alignment'] ?? $defaults['name_alignment'] );
+
+		return $settings;
+	}
+
+	/**
+	 * Deletes the course-specific certificate settings.
+	 *
+	 * @param int $course_id Course ID.
+	 * @return bool
+	 */
+	public static function delete_course_certificate( $course_id ) {
+		return delete_option( self::course_option_key( absint( $course_id ) ) );
+	}
+
+	/**
 	 * Gets the stored settings merged with defaults.
 	 *
 	 * @return array<string, mixed>
