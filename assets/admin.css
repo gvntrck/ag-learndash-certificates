@@ -193,3 +193,82 @@
 .nav-tab-wrapper {
 	margin-bottom: 20px;
 }
+
+/* Groups section styling */
+.agldc-groups-section {
+	border-top: 1px solid #dcdcde;
+	margin-top: 20px;
+	padding-top: 20px;
+}
+
+.agldc-groups-title {
+	font-size: 13px;
+	font-weight: 600;
+	margin: 0 0 16px;
+	text-transform: uppercase;
+	color: #646970;
+}
+
+.agldc-groups-list {
+	display: grid;
+	gap: 12px;
+}
+
+.agldc-group-card {
+	background: #f6f7f7;
+	border: 1px solid #c3c4c7;
+	border-radius: 4px;
+	padding: 16px;
+}
+
+.agldc-group-header {
+	align-items: center;
+	display: flex;
+	gap: 12px;
+	margin-bottom: 12px;
+}
+
+.agldc-group-name {
+	flex: 1;
+	font-weight: 500;
+}
+
+.agldc-group-fields {
+	display: grid;
+	grid-template-columns: 180px 1fr;
+	gap: 16px;
+}
+
+@media (max-width: 782px) {
+	.agldc-group-fields {
+		grid-template-columns: 1fr;
+	}
+}
+
+.agldc-group-image-section h4,
+.agldc-group-text-section h4 {
+	font-size: 12px;
+	font-weight: 600;
+	margin: 0 0 8px;
+	text-transform: uppercase;
+	color: #646970;
+}
+
+.agldc-group-preview {
+	min-height: 100px;
+	padding: 8px;
+}
+
+.agldc-group-preview img {
+	max-height: 80px;
+}
+
+.agldc-group-text-fields {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+}
+
+.agldc-group-text-fields .agldc-field-group input {
+	width: 60px;
+}

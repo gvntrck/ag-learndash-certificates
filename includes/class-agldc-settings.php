@@ -112,6 +112,74 @@ class AGLDC_Settings {
 	}
 
 	/**
+	 * Builds the option key for group-specific settings.
+	 *
+	 * @param int $group_id Group ID.
+	 * @return string
+	 */
+	private static function group_option_key( $group_id ) {
+		return 'agldc_group_' . absint( $group_id ) . '_certificate';
+	}
+
+	/**
+	 * Gets certificate settings for a specific group.
+	 * Falls back to course settings, then global settings if none exist.
+	 *
+	 * @param int $group_id  Group ID.
+	 * @param int $course_id Course ID for fallback.
+	 * @return array<string, mixed>
+	 */
+	public static function get_group_certificate( $group_id, $course_id = 0 ) {
+		$group_id = absint( $group_id );
+
+		if ( ! $group_id ) {
+			return $course_id ? self::get_course_certificate( $course_id ) : self::get();
+		}
+
+		$stored = get_option( self::group_option_key( $group_id ), array() );
+
+		if ( ! is_array( $stored ) ) {
+			$stored = array();
+		}
+
+		// Fall back to course settings, then global
+		$fallback = $course_id ? self::get_course_certificate( $course_id ) : self::get();
+
+		return wp_parse_args( $stored, $fallback );
+	}
+
+	/**
+	 * Saves certificate settings for a specific group.
+	 *
+	 * @param int   $group_id  Group ID.
+	 * @param int   $course_id Course ID for fallback defaults.
+	 * @param array $settings  Settings array.
+	 * @return bool
+	 */
+	public static function save_group_certificate( $group_id, $course_id, $settings ) {
+		$group_id = absint( $group_id );
+
+		if ( ! $group_id || ! is_array( $settings ) ) {
+			return false;
+		}
+
+		$defaults  = $course_id ? self::get_course_certificate( $course_id ) : self::get();
+		$sanitized = self::sanitize_course_settings( $settings, $defaults );
+
+		return update_option( self::group_option_key( $group_id ), $sanitized );
+	}
+
+	/**
+	 * Deletes the group-specific certificate settings.
+	 *
+	 * @param int $group_id Group ID.
+	 * @return bool
+	 */
+	public static function delete_group_certificate( $group_id ) {
+		return delete_option( self::group_option_key( absint( $group_id ) ) );
+	}
+
+	/**
 	 * Gets the stored settings merged with defaults.
 	 *
 	 * @return array<string, mixed>

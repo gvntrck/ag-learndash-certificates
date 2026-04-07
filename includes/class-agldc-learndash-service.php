@@ -18,6 +18,114 @@ class AGLDC_LearnDash_Service {
 	}
 
 	/**
+	 * Checks if LearnDash Groups functionality is available.
+	 *
+	 * @return bool
+	 */
+	public function groups_available() {
+		return function_exists( 'learndash_get_course_groups' )
+			&& function_exists( 'learndash_is_user_in_group' )
+			&& function_exists( 'learndash_get_users_group_ids' );
+	}
+
+	/**
+	 * Returns all groups associated with a course.
+	 *
+	 * @param int $course_id Course ID.
+	 * @return array<int, array<string, mixed>>
+	 */
+	public function get_course_groups( $course_id ) {
+		if ( ! $this->groups_available() ) {
+			return array();
+		}
+
+		$course_id   = absint( $course_id );
+		$group_ids   = learndash_get_course_groups( $course_id );
+		$result      = array();
+
+		if ( empty( $group_ids ) || ! is_array( $group_ids ) ) {
+			return $result;
+		}
+
+		foreach ( $group_ids as $group_id ) {
+			$group_id = absint( $group_id );
+			$group    = get_post( $group_id );
+
+			if ( ! $group || 'publish' !== $group->post_status ) {
+				continue;
+			}
+
+			$result[] = array(
+				'group_id'    => $group_id,
+				'group_title' => $group->post_title,
+			);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Returns all groups that the user belongs to.
+	 *
+	 * @param int $user_id User ID.
+	 * @return array<int>
+	 */
+	public function get_user_group_ids( $user_id ) {
+		if ( ! $this->groups_available() ) {
+			return array();
+		}
+
+		$group_ids = learndash_get_users_group_ids( $user_id );
+
+		return is_array( $group_ids ) ? array_map( 'absint', $group_ids ) : array();
+	}
+
+	/**
+	 * Gets the user's group for a specific course.
+	 * Returns the first group the user belongs to that is associated with the course.
+	 *
+	 * @param int $user_id   User ID.
+	 * @param int $course_id Course ID.
+	 * @return int|null Group ID or null if not in any group for this course.
+	 */
+	public function get_user_course_group( $user_id, $course_id ) {
+		if ( ! $this->groups_available() ) {
+			return null;
+		}
+
+		$user_id     = absint( $user_id );
+		$course_id   = absint( $course_id );
+
+		if ( ! $user_id || ! $course_id ) {
+			return null;
+		}
+
+		$user_groups   = $this->get_user_group_ids( $user_id );
+		$course_groups = $this->get_course_groups( $course_id );
+
+		if ( empty( $user_groups ) || empty( $course_groups ) ) {
+			return null;
+		}
+
+		$course_group_ids = array_map(
+			function( $group ) {
+				return $group['group_id'];
+			},
+			$course_groups
+		);
+
+		// Find intersection - user's groups that are also course groups
+		$common_groups = array_intersect( $user_groups, $course_group_ids );
+
+		if ( empty( $common_groups ) ) {
+			return null;
+		}
+
+		// Return the first matching group
+		return reset( $common_groups );
+	}
+
+	/**
 	 * Returns all published courses.
 	 *
 	 * @return array<int, array<string, mixed>>
