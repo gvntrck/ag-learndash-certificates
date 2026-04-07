@@ -83,19 +83,12 @@
 		});
 
 		// Course-specific certificate image upload
-		var courseFrame;
-
 		$(document).on('click', '.agldc-upload-course-image', function (event) {
 			event.preventDefault();
 
 			var courseId = $(this).data('course-id');
 
-			if (courseFrame) {
-				courseFrame.open();
-				return;
-			}
-
-			courseFrame = wp.media({
+			var courseFrame = wp.media({
 				title: 'Selecionar imagem do certificado',
 				button: {
 					text: 'Usar imagem'
@@ -121,8 +114,6 @@
 		});
 
 		// Group-specific certificate image upload
-		var groupFrame;
-
 		function setGroupImageState(groupId, courseId, url, id) {
 			var fieldId = 'agldc_group_' + groupId + '_course_' + courseId + '_image_id';
 			var $field = $('#' + fieldId);
@@ -156,12 +147,7 @@
 			var groupId = $(this).data('group-id');
 			var courseId = $(this).data('course-id');
 
-			if (groupFrame) {
-				groupFrame.open();
-				return;
-			}
-
-			groupFrame = wp.media({
+			var groupFrame = wp.media({
 				title: 'Selecionar imagem do certificado',
 				button: {
 					text: 'Usar imagem'
