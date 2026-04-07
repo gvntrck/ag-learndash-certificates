@@ -112,13 +112,35 @@ class AGLDC_Settings {
 	}
 
 	/**
-	 * Builds the option key for group-specific settings.
+	 * Builds the legacy option key for group-specific settings.
 	 *
 	 * @param int $group_id Group ID.
 	 * @return string
 	 */
-	private static function group_option_key( $group_id ) {
+	private static function legacy_group_option_key( $group_id ) {
 		return 'agldc_group_' . absint( $group_id ) . '_certificate';
+	}
+
+	/**
+	 * Builds the option key for group-specific settings.
+	 *
+	 * Group settings are scoped by course because the admin UI renders
+	 * each group inside a course context and the same LearnDash group can
+	 * be attached to multiple courses.
+	 *
+	 * @param int $group_id  Group ID.
+	 * @param int $course_id Optional course ID.
+	 * @return string
+	 */
+	private static function group_option_key( $group_id, $course_id = 0 ) {
+		$group_id  = absint( $group_id );
+		$course_id = absint( $course_id );
+
+		if ( $group_id && $course_id ) {
+			return 'agldc_group_' . $group_id . '_course_' . $course_id . '_certificate';
+		}
+
+		return self::legacy_group_option_key( $group_id );
 	}
 
 	/**
@@ -131,12 +153,17 @@ class AGLDC_Settings {
 	 */
 	public static function get_group_certificate( $group_id, $course_id = 0 ) {
 		$group_id = absint( $group_id );
+		$course_id = absint( $course_id );
 
 		if ( ! $group_id ) {
 			return $course_id ? self::get_course_certificate( $course_id ) : self::get();
 		}
 
-		$stored = get_option( self::group_option_key( $group_id ), array() );
+		$stored = get_option( self::group_option_key( $group_id, $course_id ), null );
+
+		if ( ! is_array( $stored ) && $course_id ) {
+			$stored = get_option( self::legacy_group_option_key( $group_id ), array() );
+		}
 
 		if ( ! is_array( $stored ) ) {
 			$stored = array();
@@ -157,7 +184,8 @@ class AGLDC_Settings {
 	 * @return bool
 	 */
 	public static function save_group_certificate( $group_id, $course_id, $settings ) {
-		$group_id = absint( $group_id );
+		$group_id  = absint( $group_id );
+		$course_id = absint( $course_id );
 
 		if ( ! $group_id || ! is_array( $settings ) ) {
 			return false;
@@ -166,17 +194,18 @@ class AGLDC_Settings {
 		$defaults  = $course_id ? self::get_course_certificate( $course_id ) : self::get();
 		$sanitized = self::sanitize_course_settings( $settings, $defaults );
 
-		return update_option( self::group_option_key( $group_id ), $sanitized );
+		return update_option( self::group_option_key( $group_id, $course_id ), $sanitized );
 	}
 
 	/**
 	 * Deletes the group-specific certificate settings.
 	 *
-	 * @param int $group_id Group ID.
+	 * @param int $group_id  Group ID.
+	 * @param int $course_id Optional course ID.
 	 * @return bool
 	 */
-	public static function delete_group_certificate( $group_id ) {
-		return delete_option( self::group_option_key( absint( $group_id ) ) );
+	public static function delete_group_certificate( $group_id, $course_id = 0 ) {
+		return delete_option( self::group_option_key( absint( $group_id ), absint( $course_id ) ) );
 	}
 
 	/**
