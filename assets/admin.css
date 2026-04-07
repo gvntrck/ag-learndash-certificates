@@ -4,21 +4,49 @@
 
 .agldc-admin-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-	gap: 20px;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 24px;
 	margin: 24px 0;
+}
+
+@media (max-width: 782px) {
+	.agldc-admin-grid {
+		grid-template-columns: 1fr;
+		gap: 20px;
+	}
 }
 
 .agldc-admin-card {
 	background: #fff;
 	border: 1px solid #dcdcde;
 	border-radius: 8px;
-	padding: 20px;
-	box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+	padding: 24px;
+	box-shadow: 0 1px 3px rgba(16, 24, 40, 0.08);
 }
 
 .agldc-admin-card h2 {
 	margin-top: 0;
+	margin-bottom: 20px;
+	padding-bottom: 12px;
+	border-bottom: 1px solid #f0f0f1;
+	font-size: 1.1em;
+}
+
+.agldc-admin-card .form-table {
+	margin-top: 0;
+}
+
+.agldc-admin-card .form-table th {
+	padding-left: 0;
+	width: 140px;
+}
+
+.agldc-admin-card .form-table td {
+	padding-right: 0;
+}
+
+.agldc-admin-card-full {
+	grid-column: 1 / -1;
 }
 
 .agldc-image-preview-wrapper {

@@ -210,7 +210,7 @@ class AGLDC_Plugin {
 										class="small-text"
 										value="<?php echo esc_attr( $settings['completion_percentage'] ); ?>"
 									/>
-									<p class="description"><?php esc_html_e( 'Exemplo: 70 libera o certificado quando o aluno concluir 70% das aulas do curso.', 'ag-learndash-certificates' ); ?></p>
+									<p class="description"><?php esc_html_e( 'Exemplo: 70 libera o certificado quando o aluno concluir 70% das aulas.', 'ag-learndash-certificates' ); ?></p>
 								</td>
 							</tr>
 						</table>
@@ -245,7 +245,7 @@ class AGLDC_Plugin {
 						</p>
 					</div>
 
-					<div class="agldc-admin-card">
+					<div class="agldc-admin-card agldc-admin-card-full">
 						<h2><?php esc_html_e( 'Nome do aluno', 'ag-learndash-certificates' ); ?></h2>
 						<table class="form-table" role="presentation">
 							<tr>
@@ -258,12 +258,10 @@ class AGLDC_Plugin {
 											<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $settings['font_family'], $key ); ?>><?php echo esc_html( $label ); ?></option>
 										<?php endforeach; ?>
 									</select>
-									<p class="description"><?php esc_html_e( 'O plugin usa fontes nativas de PDF para não depender de bibliotecas externas.', 'ag-learndash-certificates' ); ?></p>
+									<p class="description"><?php esc_html_e( 'Fontes nativas de PDF - sem dependências externas.', 'ag-learndash-certificates' ); ?></p>
 								</td>
-							</tr>
-							<tr>
 								<th scope="row">
-									<label for="agldc-font-size"><?php esc_html_e( 'Tamanho da fonte', 'ag-learndash-certificates' ); ?></label>
+									<label for="agldc-font-size"><?php esc_html_e( 'Tamanho', 'ag-learndash-certificates' ); ?></label>
 								</th>
 								<td>
 									<input
@@ -279,7 +277,7 @@ class AGLDC_Plugin {
 							</tr>
 							<tr>
 								<th scope="row">
-									<label for="agldc-font-color"><?php esc_html_e( 'Cor do nome', 'ag-learndash-certificates' ); ?></label>
+									<label for="agldc-font-color"><?php esc_html_e( 'Cor', 'ag-learndash-certificates' ); ?></label>
 								</th>
 								<td>
 									<input
@@ -289,6 +287,16 @@ class AGLDC_Plugin {
 										type="text"
 										value="<?php echo esc_attr( $settings['font_color'] ); ?>"
 									/>
+								</td>
+								<th scope="row">
+									<label for="agldc-name-alignment"><?php esc_html_e( 'Alinhamento', 'ag-learndash-certificates' ); ?></label>
+								</th>
+								<td>
+									<select id="agldc-name-alignment" name="<?php echo esc_attr( AGLDC_Settings::OPTION_KEY ); ?>[name_alignment]">
+										<?php foreach ( $align_options as $key => $label ) : ?>
+											<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $settings['name_alignment'], $key ); ?>><?php echo esc_html( $label ); ?></option>
+										<?php endforeach; ?>
+									</select>
 								</td>
 							</tr>
 							<tr>
@@ -306,10 +314,8 @@ class AGLDC_Plugin {
 										class="small-text"
 										value="<?php echo esc_attr( $settings['name_position_x'] ); ?>"
 									/>
-									<p class="description"><?php esc_html_e( 'Percentual horizontal em relação à largura do certificado.', 'ag-learndash-certificates' ); ?></p>
+									<p class="description"><?php esc_html_e( 'Percentual horizontal da largura.', 'ag-learndash-certificates' ); ?></p>
 								</td>
-							</tr>
-							<tr>
 								<th scope="row">
 									<label for="agldc-name-position-y"><?php esc_html_e( 'Posição Y (%)', 'ag-learndash-certificates' ); ?></label>
 								</th>
@@ -324,19 +330,7 @@ class AGLDC_Plugin {
 										class="small-text"
 										value="<?php echo esc_attr( $settings['name_position_y'] ); ?>"
 									/>
-									<p class="description"><?php esc_html_e( 'Percentual vertical em relação à altura do certificado.', 'ag-learndash-certificates' ); ?></p>
-								</td>
-							</tr>
-							<tr>
-								<th scope="row">
-									<label for="agldc-name-alignment"><?php esc_html_e( 'Alinhamento do nome', 'ag-learndash-certificates' ); ?></label>
-								</th>
-								<td>
-									<select id="agldc-name-alignment" name="<?php echo esc_attr( AGLDC_Settings::OPTION_KEY ); ?>[name_alignment]">
-										<?php foreach ( $align_options as $key => $label ) : ?>
-											<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $settings['name_alignment'], $key ); ?>><?php echo esc_html( $label ); ?></option>
-										<?php endforeach; ?>
-									</select>
+									<p class="description"><?php esc_html_e( 'Percentual vertical da altura.', 'ag-learndash-certificates' ); ?></p>
 								</td>
 							</tr>
 						</table>
